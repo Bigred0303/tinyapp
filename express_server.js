@@ -114,6 +114,14 @@ app.post('/logout', (req, res) => {
 
 app.post("/register" , (req, res) => {
   const id = generateRandomString();
+  if (req.body.email === "" || req.body.password === "") {
+    res.status(400);
+  }
+  for (const user in users){
+    if (user.email === req.body.email) {
+      res.status(400);
+    }
+  }
   const email = req.body.email;
   const password = req.body.password;
   const new_user = {
