@@ -116,9 +116,10 @@ app.post("/register" , (req, res) => {
   const id = generateRandomString();
   if (req.body.email === "" || req.body.password === "") {
     res.status(400);
+    res.send("You left one of email or password blank, Silly!")
   }
   for (const user in users){
-    if (user.email === req.body.email) {
+    if (users[user].email === req.body.email) {
       res.status(400);
     }
   }
