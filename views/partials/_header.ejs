@@ -16,8 +16,8 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-          <% if (username) { %>
-          <p style="margin: auto">Username: <%= username %></p>
+          <% if (user) { %>
+          <p style="margin: auto">Email: <%= user.email %></p>
           <form class="form-inline" action="/logout" method="POST">
             <button style="margin:auto" type="submit">Logout</button>
           </form>
@@ -31,6 +31,9 @@
               style="width: 300px"
               />
               <button style="margin:auto" type="submit">Submit</button>
+          </form>
+          <form class="form-inline" action="/register" method="GET">
+              <button style="margin:auto" type="submit">Register!</button>
           </form>
           <% } %>
         </div>
