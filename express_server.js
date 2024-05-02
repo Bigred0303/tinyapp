@@ -16,10 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // HELPER FUNCTIONS
 
-function generateRandomString() {
-  let randStr = null;
-  return randStr = Math.random().toString(36).slice(2, 8);
-}
+const generateRandomString = function() {
+  return Math.random().toString(36).slice(2, 8);
+};
 //
 
 const urlDatabase = {
@@ -84,6 +83,12 @@ app.post('/urls/:id/edit', (req, res) => {
   urlDatabase[id] = req.body.longURL; // edit urlDatabase.id
 
   res.redirect('/urls');
+});
+
+app.post('/login', (req, res) => {
+  res.cookie('username', req.body.username);
+
+  res.status(200).redirect('/urls');
 });
 
 app.listen(PORT, () => {
