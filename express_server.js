@@ -29,22 +29,29 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
+let user_id = null;
 const users = {
 
 };
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = {user: users[user_id] };
+  const user_id = req.cookies["user_id"];
+  const user = users[user_id] ? users[user_id] : null;
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, user: users[user_id] };
+  const user_id = req.cookies["user_id"];
+  const user = users[user_id] ? users[user_id] : null;
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user: users[user_id] };
+  const user_id = req.cookies["user_id"];
+  const user = users[user_id] ? users[user_id] : null;
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id], user: user };
   res.render("urls_show", templateVars);
 });
 
@@ -68,6 +75,13 @@ app.get("/hello", (req, res) => {
 app.get('/register', (req, res) => {
   res.render("register");
 });
+
+app.get('/login', (req, res) => {
+  const user_id = req.cookies["user_id"];
+  const user = users[user_id] ? users[user_id] : null;
+  const templateVars = { urls: urlDatabase, user: user };
+  res.render("login", templateVars);
+})
 
 app.post("/urls", (req, res) => {
 
@@ -98,9 +112,14 @@ app.post('/urls/:id/edit', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  // if (!req.body.username) {
-  //   res.cookie('user_id', req.body.id);
-  // }
+  
+    for (const user in users) {
+      if (req.body.email === users[user].email && req.body.password === users[user].password) {
+        user_id = users[user].id
+        res.cookie("email", users[user_id].email)
+      }
+
+  }
 
 
   res.status(200).redirect('/urls');
