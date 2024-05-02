@@ -90,7 +90,10 @@ app.post('/urls/:id/edit', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
+  if (req.body.username){
+    res.cookie('username', req.body.username);
+  }
+
 
   res.status(200).redirect('/urls');
 });
