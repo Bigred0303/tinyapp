@@ -112,25 +112,28 @@ app.post('/urls/:id/edit', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  
-  for (const user in users) {
-    if (req.body.email === users[user].email && req.body.password === users[user].password) {
-      userId = users[user].id;
+  let foundUser = null;
+  for (const userId in users) {
+    const user = users[userId];
+    if (user.email === req.body.email) {
+      foundUser = user;
     }
-    if (req.body.email === users[user].email && req.body.password !== users[user].password) {
-      res.send("Wrong Password");
-    }
-
+  }
+  if (!foundUser) {
+    return res.status(403).send('No user with that email found');
+  }
+  if (foundUser.password !== req.body.password) {
+    return res.status(403).send('Wrong Password');
   }
 
-
-  res.send("User doesn't exist");
+  res.cookie('userId', foundUser.id);
+  res.status(200).redirect('urls');
 });
 
 app.post('/logout', (req, res) => {
   res.clearCookie('userId');
 
-  res.status(200).redirect('/urls');
+  res.status(200).redirect('/login');
 });
 
 app.post("/register" , (req, res) => {
@@ -152,7 +155,6 @@ app.post("/register" , (req, res) => {
     password: password
   };
   users[id] = newUser;
-  res.cookie("userId", id);
   console.log(users);
   res.status(200).redirect("/urls");
 });
