@@ -139,12 +139,11 @@ app.post('/logout', (req, res) => {
 app.post("/register" , (req, res) => {
   const id = generateRandomString();
   if (req.body.email === "" || req.body.password === "") {
-    res.status(400);
-    res.send("You left one of email or password blank, Silly!");
+    res.status(400).send("You left one of email or password blank, Silly!");;
   }
   for (const user in users) {
     if (users[user].email === req.body.email) {
-      res.status(400);
+      res.status(400).send("A user with that email already exists, try to login instead");
     }
   }
   const email = req.body.email;
