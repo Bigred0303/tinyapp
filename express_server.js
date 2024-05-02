@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // HELPER FUNCTIONS
 
 function generateRandomString() {
-  const randStr = null;
+  let randStr = null;
   return randStr = Math.random().toString(36).slice(2, 8);
 }
 //
