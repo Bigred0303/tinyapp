@@ -23,7 +23,7 @@ const generateRandomString = function() {
 };
 //
 
-let username = '';
+
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -50,7 +50,7 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.send("Hello! Please go to /urls to see TinyApp!");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -90,10 +90,16 @@ app.post('/urls/:id/edit', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  if (req.body.username){
+  if (req.body.username) {
     res.cookie('username', req.body.username);
   }
 
+
+  res.status(200).redirect('/urls');
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
 
   res.status(200).redirect('/urls');
 });
