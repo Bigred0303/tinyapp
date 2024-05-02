@@ -35,6 +35,9 @@ const users = {
 };
 
 app.get("/urls/new", (req, res) => {
+  if (!req.cookies["userId"]) {
+    res.redirect("/login");
+  }
   const userId = req.cookies["userId"];
   const user = users[userId] ? users[userId] : null;
   const templateVars = { urls: urlDatabase, user: user };
@@ -56,6 +59,9 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
+  if (!urlDatabase[req.params.id]) {
+    res.send("ID does not exist silly!");
+  }
   const longURL = urlDatabase[req.params.id];
   res.status(200).redirect(longURL);
 });
@@ -73,18 +79,26 @@ app.get("/hello", (req, res) => {
 });
 
 app.get('/register', (req, res) => {
+  if (req.cookies["userId"]) {
+    res.redirect("/urls");
+  }
   res.render("register");
 });
 
 app.get('/login', (req, res) => {
-  const userId = req.cookies["userId"];
+  if (req.cookies["userId"]) {
+    res.redirect("/urls");
+  }
+  // const userId = req.cookies["userId"];
   const user = users[userId] ? users[userId] : null;
   const templateVars = { urls: urlDatabase, user: user };
   res.render("login", templateVars);
 });
 
 app.post("/urls", (req, res) => {
-
+  if (req.cookies.userId === undefined || req.cookies.userId === null) {
+    res.send("You cannot shorten URLS, please Login first!");
+  }
   const id = generateRandomString();
   urlDatabase[id] = req.body.longURL;
 
