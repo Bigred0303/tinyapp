@@ -50,7 +50,7 @@ const urlDatabase = {
 
 let userId = null;
 const users = {
-  email: "user2@example.com", password: "dishwasher-funk"
+  
 };
 
 // Brings you to new URL page, must be logged in
