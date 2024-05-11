@@ -33,7 +33,6 @@ describe('getUserByEmail', function() {
   });
 });
 
-
 describe("Login and Access Control Test", () => {
   it('should return 403 status code for unauthorized access to "http://localhost:8080/urls/b2xVn2"', () => {
     const agent = chai.request.agent("http://localhost:8080");
@@ -51,6 +50,7 @@ describe("Login and Access Control Test", () => {
       });
   });
 });
+
 describe('Test Redirect from / to /login', function() {
   it('should redirect GET request from / to /login', function() {
     // Create a chai HTTP agent for making requests
@@ -72,7 +72,6 @@ describe('Test Redirect from / to /login', function() {
       });
   });
 });
-
 
 describe('Test Redirect from /urls/new to /login', function() {
   it('should redirect GET request from /urls/new to /login with status code 302', function() {
@@ -107,6 +106,7 @@ describe('Test GET request to non-existent URL', function() {
       });
   });
 });
+
 describe('Test GET request to protected URL', function() {
   it('should return status code 403 for accessing protected URL without proper authentication', function() {
     // Make GET request to the protected URL
