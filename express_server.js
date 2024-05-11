@@ -14,6 +14,7 @@ app.set("view engine", "ejs");
 // MIDDLEWARE
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cookieSession({
   name: 'MMM Session Cookies',
   keys: ['This is a string'],
@@ -49,7 +50,7 @@ const urlDatabase = {
 
 let userId = null;
 const users = {
-
+  email: "user2@example.com", password: "dishwasher-funk"
 };
 
 // Brings you to new URL page, must be logged in
@@ -102,7 +103,7 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello! Please go to /urls to see TinyApp! (Go to /login to skip being told to login to do anything :) )");
+  res.redirect('/login');
 });
 
 app.get("/urls.json", (req, res) => {
@@ -218,7 +219,7 @@ app.post("/register" , (req, res) => {
   // Makes sure users email doesn't already exist
   const emailReg = req.body.email;
   const foundUser = helpers.getUserByEmail(emailReg, users);
-  if (foundUser !== null) {
+  if (foundUser !== undefined) {
     res.status(400).send("A user with that email already exists, try to login instead");
   }
   // Creates new user with given information, stores password as encrypted value
@@ -236,3 +237,6 @@ app.post("/register" , (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
+module.exports = app;
