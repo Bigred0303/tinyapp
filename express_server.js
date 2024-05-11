@@ -82,7 +82,7 @@ app.get("/urls/:id", (req, res) => {
     res.send("This URL doesn't belong to you!");
   }
   const user = users[userId] ? users[userId] : null;
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id.longURL], user: user };
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id].longURL, user: user };
   res.render("urls_show", templateVars);
 });
 
