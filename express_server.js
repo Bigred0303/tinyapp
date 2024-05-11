@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
+const helpers = require("./helpers");
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -20,12 +21,6 @@ app.use(cookieSession({
 
 //
 
-// HELPER FUNCTIONS
-
-const generateRandomString = function() {
-  return Math.random().toString(36).slice(2, 8);
-};
-
 const urlsForUser = function(id) {
   let returnURLS = {
 
@@ -38,8 +33,8 @@ const urlsForUser = function(id) {
   console.log(returnURLS);
   return returnURLS;
 };
-//
 
+//
 
 const urlDatabase = {
   b6UTxQ: {
@@ -144,7 +139,7 @@ app.post("/urls", (req, res) => {
   if (req.session.userId === undefined || req.session.userId === null) {
     res.status(403).send("You cannot shorten URLS, please Login first!");
   }
-  const id = generateRandomString();
+  const id = helpers.generateRandomString();
   const userId = req.session["userId"];
   // Template object for new URLS in the database
   const newURL = {
@@ -182,17 +177,14 @@ app.post('/urls/:id/edit', (req, res) => {
   res.redirect('/urls');
 });
 
-// Login functionality
+// Login Functionality
 
 app.post('/login', (req, res) => {
   let foundUser = null;
+  const email = req.body.email;
   // Searches for your user(email) in the users object
-  for (const userId in users) {
-    const user = users[userId];
-    if (user.email === req.body.email) {
-      foundUser = user;
-    }
-  }
+  foundUser = helpers.getUsersByEmail(email, users);
+
   if (!foundUser) {
     return res.status(403).send('No user with that email found');
   }
@@ -216,17 +208,18 @@ app.post('/logout', (req, res) => {
 // Register functionality
 
 app.post("/register" , (req, res) => {
+
   // Create unique user ID
-  const id = generateRandomString();
+  const id = helpers.generateRandomString();
   // Makes sure all fields are valid
   if (req.body.email === "" || req.body.password === "") {
     res.status(400).send("You left one of email or password blank, Silly!");
   }
   // Makes sure users email doesn't already exist
-  for (const user in users) {
-    if (users[user].email === req.body.email) {
-      res.status(400).send("A user with that email already exists, try to login instead");
-    }
+  const emailReg = req.body.email;
+  const foundUser = helpers.getUsersByEmail(emailReg, users);
+  if (foundUser !== null) {
+    res.status(400).send("A user with that email already exists, try to login instead");
   }
   // Creates new user with given information, stores password as encrypted value
   const email = req.body.email;
