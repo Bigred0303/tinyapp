@@ -17,13 +17,13 @@ const users = {
 
 describe('getUserByEmail', function() {
   it('should return a user with valid email', function() {
-    const user = helpers.getUsersByEmail("user@example.com", users)
+    const user = helpers.getUserByEmail("user@example.com", users)
     const expectedUserID = "userRandomID";
-    assert(user.id === expectedUserID, "Users email corresponds to correct ID");
+    assert.strictEqual(user.id, expectedUserID, "Users email corresponds to correct ID");
   });
   it('should return undefined with invalid email', function() {
-    const user = helpers.getUsersByEmail("user123@example.com", users)
+    const user = helpers.getUserByEmail("user123@example.com", users)
     const expectedUserID = "userRandomID";
-    assert(user === undefined, "Returns undefined when passed invalid email");
+    assert.strictEqual(user, undefined, "Returns undefined when passed invalid email");
   });
 });

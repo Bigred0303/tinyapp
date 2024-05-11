@@ -1,4 +1,4 @@
-const getUsersByEmail = function (email, users) {
+const getUserByEmail = function (email, users) {
     let foundUser = undefined;
     for (const userId in users) {
       const user = users[userId];
@@ -15,4 +15,4 @@ const generateRandomString = function() {
 };
 
 
-  module.exports = { getUsersByEmail, generateRandomString};
+  module.exports = { getUserByEmail, generateRandomString};

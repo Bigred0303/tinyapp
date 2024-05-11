@@ -183,7 +183,7 @@ app.post('/login', (req, res) => {
   let foundUser = null;
   const email = req.body.email;
   // Searches for your user(email) in the users object
-  foundUser = helpers.getUsersByEmail(email, users);
+  foundUser = helpers.getUserByEmail(email, users);
 
   if (!foundUser) {
     return res.status(403).send('No user with that email found');
@@ -217,7 +217,7 @@ app.post("/register" , (req, res) => {
   }
   // Makes sure users email doesn't already exist
   const emailReg = req.body.email;
-  const foundUser = helpers.getUsersByEmail(emailReg, users);
+  const foundUser = helpers.getUserByEmail(emailReg, users);
   if (foundUser !== null) {
     res.status(400).send("A user with that email already exists, try to login instead");
   }
