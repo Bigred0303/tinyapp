@@ -22,20 +22,6 @@ app.use(cookieSession({
 
 //
 
-const urlsForUser = function(id) {
-  let returnURLS = {
-
-  };
-  for (const url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      returnURLS[url] = urlDatabase[url];
-    }
-  }
-  console.log(returnURLS);
-  return returnURLS;
-};
-
-//
 
 const urlDatabase = {
   b6UTxQ: {
@@ -57,7 +43,7 @@ const users = {
 
 app.get("/urls/new", (req, res) => {
   if (!req.session["userId"]) {
-    res.redirect("/login");
+    return res.redirect("/login");
   }
   const userId = req.session["userId"];
   const user = users[userId] ? users[userId] : null;
@@ -73,7 +59,7 @@ app.get("/urls", (req, res) => {
   }
   const userId = req.session["userId"];
   const user = users[userId] ? users[userId] : null;
-  const templateVars = { urls: urlsForUser(userId), user: user };
+  const templateVars = { urls: helpers.urlsForUser(userId, urlDatabase), user: user };
   res.render("urls_index", templateVars);
 });
 
@@ -87,6 +73,9 @@ app.get("/urls/:id", (req, res) => {
   if (userId !== urlDatabase[req.params.id].userID) {
     res.status(403).send("This URL doesn't belong to you!");
   }
+    if (!req.params.id in urlDatabase) {
+      res.status(403).send("This ID doesn't exist, please add it to the database first!");
+    }
   const user = users[userId] ? users[userId] : null;
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id].longURL, user: user };
   res.render("urls_show", templateVars);
@@ -103,7 +92,7 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.redirect('/login');
+  return res.redirect('/login');
 });
 
 app.get("/urls.json", (req, res) => {
@@ -118,16 +107,18 @@ app.get("/hello", (req, res) => {
 
 app.get('/register', (req, res) => {
   if (req.session["userId"]) {
-    res.redirect("/urls");
+    return res.redirect("/urls");
   }
-  res.render("register");
+  const user = users[userId] ? users[userId] : null;
+  const templateVars = { urls: urlDatabase, user: user };
+  res.render("register", templateVars);;
 });
 
 // Brings you to the login page, if you already have a cookie somehow it brings you to the urls page
 
 app.get('/login', (req, res) => {
   if (req.session["userId"]) {
-    res.redirect("/urls");
+    return res.redirect("/urls");
   }
   const user = users[userId] ? users[userId] : null;
   const templateVars = { urls: urlDatabase, user: user };
@@ -149,7 +140,7 @@ app.post("/urls", (req, res) => {
     userID: userId
   };
   urlDatabase[id] = newURL;
-  res.status(200).redirect(`/urls/${id}`);
+  return res.status(200).redirect(`/urls/${id}`);
 });
 
 // DELETE a URL
@@ -162,7 +153,7 @@ app.post('/urls/:id/delete', (req, res) => {
 
   delete urlDatabase[id]; // delete urlDatabase.id
 
-  res.redirect('/urls');
+  return res.redirect('/urls');
 });
 
 // EDIT a URL
@@ -175,7 +166,7 @@ app.post('/urls/:id/edit', (req, res) => {
 
   urlDatabase[id].longURL = req.body.longURL; // edit urlDatabase.id
 
-  res.redirect('/urls');
+  return res.redirect('/urls');
 });
 
 // Login Functionality
@@ -231,7 +222,8 @@ app.post("/register" , (req, res) => {
     password: password
   };
   users[id] = newUser;
-  res.status(200).redirect("/login");
+  req.session.userId = users[id].id;
+  res.status(200).redirect("/urls");
 });
 
 app.listen(PORT, () => {
